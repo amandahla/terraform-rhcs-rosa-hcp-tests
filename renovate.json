@@ -1,0 +1,55 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:recommended",
+    "customManagers:dockerfileVersions"
+  ],
+  "dependencyDashboard": true,
+  "minimumReleaseAge": "3 days",
+  "prConcurrentLimit": 10,
+  "prHourlyLimit": 0,
+  "reviewersFromCodeOwners": true,
+  "tekton": {
+    "schedule": ["at any time"]
+  },
+  "labels": ["ok-to-test"],
+  "packageRules": [
+    {
+      "description": "Terraform providers and version in the root versions.tf",
+      "rangeStrategy": "bump",
+      "matchManagers": ["terraform"],
+      "matchDepTypes": ["required_provider", "required_version"],
+      "matchFileNames": ["versions.tf"],
+      "groupName": "Terraform Providers",
+      "groupSlug": "tf-providers",
+      "commitMessagePrefix": "chore(deps): ",
+      "automerge": false
+    },
+    {
+      "description": "Terraform providers and version in modules are disabled",
+      "matchManagers": ["terraform"],
+      "matchDepTypes": ["required_provider", "required_version"],
+      "matchFileNames": ["modules/**/versions.tf"],
+      "enabled": false
+    },
+    {
+      "description": "Group GitHub Actions updates to avoid many CI pull requests",
+      "matchManagers": ["github-actions"],
+      "groupName": "GitHub Actions Dependencies",
+      "groupSlug": "gh-actions",
+      "commitMessagePrefix": "chore(deps): ",
+      "automerge": false
+    },
+    {
+      "description": "Terraform modules grouped by source",
+      "matchManagers": ["terraform"],
+      "matchDepTypes": ["module"],
+      "matchFileNames": ["modules/**"],
+      "groupName": "Terraform Modules",
+      "groupSlug": "tf-modules",
+      "commitMessagePrefix": "chore(deps): ",
+      "rangeStrategy": "bump",
+      "automerge": false
+    }
+  ]
+}
